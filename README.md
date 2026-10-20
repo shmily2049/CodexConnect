@@ -4,6 +4,8 @@
 
 当前版本：**0.10.13（Windows 已验证；macOS 仅静态验证）**。作者：夏谈AI。
 
+<img src="src/assets/author-qr.png" alt="夏谈AI二维码" width="240">
+
 ## 功能
 
 - 首次使用引导、密钥帮助、中文错误提示和折叠高级设置。
