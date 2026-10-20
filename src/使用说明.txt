@@ -1,0 +1,191 @@
+Codex Connect · 模型配置助手 0.10.13
+作者：夏谈AI
+
+用途
+给本地 Codex 配置第三方 Responses API 服务。提供国内外 8 类模型服务预设和自定义服务。
+不提供 Chat Completions 到 Responses 的协议转换；并非所有“OpenAI 兼容”服务都可使用。
+
+Windows
+直接双击 CodexConnect-0.10.13.exe，无需解压、安装 Python 或运行命令。
+这是未签名的小工具，Windows 可能显示发布者未验证；源码可直接检查。
+
+macOS
+Apple 芯片下载 CodexConnect-0.10.13-AppleSilicon.dmg，Intel 芯片下载 CodexConnect-0.10.13-Intel.dmg。
+打开 DMG 后双击其中的 CodexConnect.app；也可复制到“应用程序”后打开。
+DMG 中的应用内置 Python，无需另装；尚未签名、公证或在 Mac 真机验收。
+源码包供开发者使用，普通用户无需下载。开发与构建方法见工作空间 README.md。
+
+新手引导（Windows 隔离配置桌面流程已验证）
+- 第一次打开选择“使用 ChatGPT套餐”或“连接其他模型”。以后可在“设置”重新查看引导。
+- 选择服务后点击“如何获取密钥？”，按步骤复制密钥，再回来点击“粘贴”。密钥不是登录密码。
+- 测试连接可能产生少量费用，发送前会询问。确认保存后，还需要重启 Codex 并新建会话。
+- 遇到错误时先看中文说明，再使用底部的处理按钮；不需要手动修改代码。
+- 高级设置默认收起。只有需要自定义配置位置、密钥方式等选项时才展开。
+- 工具仅在配置目录旁保存“已看过引导”的标记，不包含密钥或模型信息；无法保存标记时仍可继续使用。
+
+服务商快速配置（0.7.0，资料核对于 2026-10-19）
+在“添加模型”顶部选择国内模型或国际模型，然后选择服务商卡片。
+点击“自定义模型”直接填写名称、模型、API 地址和密钥，无需再选卡片；重复点击不会清空当前填写内容。
+选择接入方式，检查预填模型，再填写对应密钥；模型下拉框也支持手动输入。
+预填为文档中的示例，不保证是最新模型，也不代表账号已开通权限。
+
+国内模型：
+- DeepSeek：官方地址和 deepseek-flash，检查配置时自动获取官方模型目录。
+- Kimi：国内开放平台 api.moonshot.cn，kimi-k3；自动填写官方 1048576 上下文长度。
+- 通义千问：百炼按量付费，支持北京和新加坡。先填 Workspace ID，再填对应地域的 Key。
+  自动生成工作空间专属地址；预填 qwen3.7-max，仅选择支持 Responses 的模型。
+  本预设不使用 Coding Plan 额度，不可混用 Coding Plan 的密钥。
+- 豆包 / 火山方舟：按量 API、Coding Plan、Agent Plan 三种入口分开选择。
+  按量预填 doubao-seed-2-1-pro-260915，也可填已开通的模型或接入点 ID。
+  套餐预填 ark-code-latest，对应套餐控制台所选模型；使用该套餐的专属 Key。
+
+国际模型：
+- OpenAI API：官方 API，示例 gpt-6.1-sol / gpt-6-astra / gpt-6-luna。
+  API 单独计费；想使用 ChatGPT 订阅，请使用“我的模型 → ChatGPT套餐”。
+- Grok：xAI 官方 Responses API，示例 grok-4.6。
+- Claude：经 OpenRouter 接入，示例 anthropic/claude-sonnet-4.6。
+- Gemini：经 OpenRouter 接入，示例 google/gemini-3.1-pro-preview。
+  后两项由 OpenRouter 转发和计费，请求交给 OpenRouter 及上游；只填 OpenRouter Key，
+  不能填 Anthropic / Google 官方密钥。本工具不内置协议转换或代理。
+
+切换服务、计费通道或百炼工作空间会清空未保存密钥，旧目录和预览也会失效。
+各服务页面提供文档入口；上下文长度可在设置调整，留空使用模型默认值。
+切换模型方案时，上下文长度随方案恢复；切回套餐会恢复账号原有长度设置。
+不同服务的流式输出、工具调用和长上下文能力仍须在 Codex 中使用实际账号验证。
+
+基本步骤（0.9.0）
+1. 选择模型服务。已有 ChatGPT 账号并想继续使用订阅时，直接进入“我的模型”。
+2. 若显示套餐或地域，请先选好；通义千问还需先填写百炼工作空间 ID。
+3. 从对应服务商复制 API Key，点击“粘贴”。不清楚时点击“如何获取密钥？”查看帮助步骤。
+   API Key 不是账号密码。工具仅在点击粘贴时读取剪贴板，不会自动读取或清空剪贴板。
+   保存后密钥会以明文留在本机配置和备份中；界面默认隐藏密钥。
+4. 查看预填的模型名称，可从下拉框选择或手动输入。预填不代表已开通。
+   API 地址和 Provider ID 已自动填写；设置通常不用改。
+5. 点击“下一步”。DeepSeek 如缺少清单，会从官方文档自动获取，不执行安装脚本。
+   获取失败可检查网络后重试，或到设置选择本地模型清单。
+6. 阅读中文摘要，确认模型、计费通道和请求地址；需要时展开技术详情。
+   检查不会写配置，也不会调用付费模型。单独的“测试连接”会在确认后发送一条短消息，可能产生费用。
+7. 点击“备份并保存”，确认后写入。保存完成页可点击“重启 Codex”，或进入已保存模型列表。
+   重启仍会再次提醒你先完成或停止任务；新建会话验证实际使用，保存本身不代表已经连通。
+
+高级选项
+- 配置文件位置默认尊重 CODEX_HOME，未设置时使用用户目录下 .codex/config.toml。
+- Provider ID 按地址生成并自动避开重名；载入服务后保留原标识，更改地址会分配另一标识。
+- 若确实设置过系统环境变量，可在“设置 → 密钥方式”选择“环境变量”；工具不会替你设置变量。
+  从 Finder / Dock 启动的 macOS 应用可能读不到终端变量。
+- 思考程度、上下文长度、API 地址和模型清单在“设置”中调整。
+
+我的模型
+在左侧进入“我的模型”，点击目标卡片上的“切换到此模型”或“切回套餐”，确认后切换，无需重填 API Key。
+当前配置所选模型置顶并以淡紫色高亮，按钮显示“✓ 已选择”且不能重复点击。
+顶部“配置已选择”只代表本地配置；“Codex 实际运行：尚未核实”表示未验证当前会话。
+Codex 左下角仍显示账号并不能说明当前请求使用哪个模型。
+模型方案从当前配置和校验通过的历史备份自动提取；同一服务共用当前保存的密钥。
+“ChatGPT套餐”切回内置 OpenAI 服务并使用 ChatGPT 登录。优先恢复历史账号模型设置；
+没有可恢复设置时使用 Codex 默认模型。若原登录已退出或失效，请在 Codex 中重新登录。
+本工具不读取、复制、修改 auth.json 或系统钥匙串，不提供多个 ChatGPT 账号的代登录。
+切换只更新模型相关字段，保留后来添加的 MCP 和项目设置；每次切换均备份并检查并发修改。
+完全重启 Codex 并新建会话后验证；不会热切换已有会话。命令行参数、命名 profile、组织策略
+可能覆盖本地配置。检测到命名 profile 时会提示处理，不会静默覆盖它。
+不要删除 provider-tool-backups 或 provider-tool-catalogs，否则历史方案或模型目录可能丢失。
+0.7.0 不再为第三方服务写入 forced_login_method="api"，避免强制限制使已有 ChatGPT 登录退出。
+
+自动重启（0.7.0）
+在“我的模型”勾选“切换后自动重启 Codex”，确认切换后，先备份保存，再请求正常退出并打开桌面应用。
+也可单独点击“重启 Codex”。默认不勾选，避免意外中断任务。
+重启会关闭整个桌面应用的窗口；工具不能判断是否仍有任务运行，请先完成或停止任务。
+未完全退出（包括托盘驻留）时提示手动处理，不强杀、不结束独立 CLI 进程；保存的配置仍保留。
+只支持默认 CODEX_HOME/config.toml；选择其他配置文件时请取消自动重启。
+Windows 当前识别 Microsoft Store 的 OpenAI.Codex 包；其他安装方式请手动重启。
+macOS 识别 /Applications 或 ~/Applications 中的 Codex.app / ChatGPT.app；多个运行目标时拒绝猜测。
+系统可能要求自动化权限。未在 Mac 真机测试，无法保证不同系统版本下的自动退出行为。
+检测到新进程只代表应用启动，不代表模型或登录已验证；重新打开后请新建会话检查。
+如果只换当前服务的已有模型，请直接使用 Codex 输入框下方的模型选择器，无需通过本工具改配置。
+
+保存行为
+修改 model、model_provider、forced_login_method、web_search、推理级别和模型目录引用，
+以及选中 Provider 的连接与鉴权字段。顶层字段由 TOML 库正确放置。
+保留其他 Provider、桌面设置、MCP、项目配置和注释。不会改 auth.json 或删除会话。
+切换到 API 鉴权可能影响 Codex 展示的历史会话分组；恢复配置后重启客户端可切回。
+默认关闭内置搜索。通用服务的模型目录留空时，会移除旧的 model_catalog_json 引用。
+推理级别留空会移除旧的 model_reasoning_effort；已有其他模型能力覆盖字段由用户自行复核。
+如果同名服务的地址不同，自动分配其他标识，避免继承旧服务凭据。
+直接 Key 不会在加载现有配置时回填；需要重新输入或改用环境变量。
+
+备份和恢复
+进入“设置 → 恢复备份”，刷新列表后选择版本，再点击“恢复所选版本”。
+备份位于配置目录的 provider-tool-backups，每次写入保存原文件和校验信息。
+备份可能含旧凭据，只应保存在自己控制的设备上，不要上传或分享备份目录。
+保存前检查是否有并发修改；检测到变化时停止写入。
+恢复仅适用于“当前文件仍等于该次保存结果”的情况，避免覆盖后续配置变更。
+恢复前再次备份。若原来没有 config.toml，恢复会移除本工具新建的该文件。
+下载的模型目录保存在 provider-tool-catalogs，按内容哈希命名；恢复不会删除这些目录文件。
+不要把备份目录和模型目录当作要一键清空的缓存。
+
+验证范围
+短文本测试通过，只能证明该次 Responses 请求得到完整文字回复。
+工具调用、SSE 流式输出、多轮会话和桌面模型列表仍需在 Codex 内验证。
+未使用真实 API Key 进行发布验收，也不会自动发起付费调用。
+Windows 会运行界面冒烟检查；macOS 尚无真机运行证据。
+
+开发和测试
+源码：app.py（交互流程）、desktop_ui.py（布局）、desktop_widgets.py（桌面控件）、provider_core.py（配置、备份、网络请求）、switch_profiles.py（模型切换）、tests。
+在工作空间根目录运行：python -m unittest discover -s src/tests -v
+界面冒烟：python src/app.py --smoke-ui
+测试只使用临时目录与本机模拟 HTTP 服务，不读取或修改真实 Codex 配置。
+
+官方资料（核对于 2026-10-19）
+https://api-docs.deepseek.com/quick_start/agent_integrations/codex/
+https://learn.chatgpt.com/docs/config-file/config-reference
+https://learn.chatgpt.com/docs/config-file/config-advanced
+https://www.python.org/downloads/
+
+账号模式依据：https://learn.chatgpt.com/docs/auth
+
+重启要求：https://learn.chatgpt.com/docs/enterprise/connect-to-a-gateway
+模型选择：https://learn.chatgpt.com/docs/models
+
+预设参考资料：
+https://platform.kimi.com/docs/guide/codex-kimi
+https://www.alibabacloud.com/help/en/model-studio/codex
+https://console.volcengine.com/ark/region:cn-beijing/docs/integrate-third-party-tools
+https://docs.volcengine.com/docs/ark/coding-plan-personal-ai-codex?lang=zh
+https://docs.volcengine.com/docs/ark/agent-plan-personal-codex?lang=en
+https://developers.openai.com/api/docs/models/gpt-6.1-sol
+https://docs.x.ai/developers/model-capabilities/text/comparison
+https://openrouter.ai/blog/tutorials/codex-cli-openrouter/
+https://openrouter.ai/anthropic/claude-sonnet-4.6
+https://openrouter.ai/google/gemini-3.1-pro-preview
+
+密钥获取说明（2026-10-19 核对）：
+https://api-docs.deepseek.com/
+https://help.aliyun.com/zh/model-studio/get-api-key/
+https://developers.openai.com/api/docs/quickstart
+https://docs.x.ai/developers/quickstart
+
+界面结构（0.10.4）
+主导航仅保留“添加模型 / 我的模型 / 设置”。首页显示当前服务、模型、API Key；套餐、地域、工作空间仅在需要时出现。原有账号切换在“我的模型”，环境变量和备份在“设置”。
+
+自定义模型名称（0.9.3）
+在自定义表单填写“名称”，保存后“我的模型”显示“名称 · 模型”。同一服务的不同模型可分别命名，切换时恢复相应名称。名称不改变 API 地址、模型 ID 或密钥。
+
+作者与使用说明（0.10.4）
+侧栏直接显示二维码，不再显示作者署名文字，点击图片可放大；按 Escape 或关闭按钮返回。
+“设置 → PDF 使用说明”打开内置 PDF；每个 release/CodexConnect-版本号/ 目录还单独附一份 PDF。
+该版本目录仅包含 Windows EXE、AppleSilicon DMG、Intel DMG 和 PDF 四个文件。
+
+模型名称同步（0.10.6）：保存或切换自定义模型时，自动准备 Codex 模型清单。完全退出 Codex（包括托盘）后重新打开并新建会话，可读取模型 ID 作为具体名称。已有的自定义方案可重新保存；切换旧方案也会补充清单。名称不改变请求用的模型 ID 和大小写。导入服务商清单时保留其能力字段，不改原文件；没有清单时使用 Codex 通用默认设置，实际模型能力仍需验证。切回 ChatGPT套餐会恢复此前套餐配置。
+
+0.10.7：我的模型支持编辑与删除。编辑后“保存并使用”，旧方案不重复保留；同一地址密钥留空可继续使用旧密钥，改地址须重新填写。删除仅从方案列表移除，保留配置备份和同服务共用凭据；当前方案先切换再删除。ChatGPT套餐是固定入口。目录和发行命名统一 CodexConnect，Windows 测试包位于 release/CodexConnect-0.10.7/。
+
+
+0.10.8：修复切回套餐时遗留 OpenAI 地址覆盖（确认后恢复默认地址）、配置与方案状态共同恢复、新增入口残留编辑状态、旧式 profile 兼容性校验和 Windows 独立 PDF 打包。方案独立存储，旧版历史在确认写入时导入；备份列表显示时间、模型变化与恢复状态。关闭窗口或切换服务时保护未保存输入，保存后可直接测试已保存方案，同服务凭据修改会提示受影响方案。支持紧凑窗口、响应式服务卡片与键盘焦点滚动。Mac 仍仅静态包检查，未完成真机、签名、公证。
+
+
+0.10.11：同页从编辑转新增会清除编辑目标，未保存改动仍先确认。编辑页显示“编辑模型 / 检查修改”。我的模型支持名称、服务商及地址搜索，仅过滤内存中的已读方案；分页按搜索结果计算。切换准备移到后台，重用本次已验证的方案集合，保存前仍重新检查配置及方案状态，过期结果不弹确认框。读取时明确显示正在读取当前配置，失败提供处理方向。未完成、空白或异常类型的文字回复不能通过连接测试。损坏备份单独标记且禁止恢复，不中断其他条目。
+
+
+0.10.12：切换“国内模型 / 国际模型”时首次选中第一项，再次切回恢复本次打开期间该分组上次选择的服务商，并同步模型默认值。切换分组前确认未保存的改动；取消保持原页签、输入和预览。重复点击当前分组不重置表单。这里只切换填写对象，确认保存后才修改实际配置。
+
+
+0.10.13：编辑绑定配置和模型列表版本，其他窗口删除方案后旧编辑不能恢复它。历史地址不匹配时需要重新连接；改地址不能沿用原环境变量。编辑、检查、删除和备份读取在后台进行，可取消等待；取消地域选择保留输入与预览，载入失败保留编辑状态。备份页自动刷新、支持可恢复筛选和打开文件夹，不可恢复时禁用按钮。“设置”可复制不含密钥、地址或配置内容的诊断摘要。

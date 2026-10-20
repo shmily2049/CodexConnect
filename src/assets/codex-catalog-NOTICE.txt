@@ -1,0 +1,8 @@
+Codex model metadata and default prompt: Copyright OpenAI, Apache License 2.0.
+Bundled catalog exported offline from Codex CLI 0.163.0-alpha.10.2.
+Fallback metadata: https://github.com/openai/codex/blob/main/codex-rs/models-manager/src/model_info.rs
+Fallback prompt: https://github.com/openai/codex/blob/main/codex-rs/models-manager/prompt.md
+Default prompt matches installed binary byte-for-byte after LF/CRLF normalization.
+Fallback numbers and modalities are Codex defaults, NOT provider capability claims.
+Generated selected entries change slug, display_name and visibility only.
+Imported provider fields take precedence.

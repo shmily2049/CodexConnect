@@ -1,0 +1,36 @@
+__pycache__/
+*.pyc
+tools/windows/build/
+tools/windows/dist/
+tools/windows/pyinstaller-cache/
+tools/windows/test-temp/
+tools/windows/*.spec
+tools/windows/packages/
+tools/windows/ui-*.png
+tools/macos/*.tar.gz
+tools/macos/*.whl
+tools/macos/runtime-build-source.zip
+work/
+
+# Local release output; publish installation packages through GitHub Releases.
+/release/
+
+# Local historical records
+/docs/
+/src/验证记录.txt
+/tools/windows/package-SHA256.txt
+/tools/macos/*-validation.json
+/tools/macos/macho-report.json
+/tools/macos/standalone-SHA256.txt
+/tools/macos/assets.html
+
+# Local credentials and config backups
+.env
+.env.*
+!.env.example
+**/auth.json
+**/config.toml
+**/provider-tool-backups/
+**/provider-tool-catalogs/
+**/provider-tool-profile-backups/
+**/provider-tool-profiles.json
